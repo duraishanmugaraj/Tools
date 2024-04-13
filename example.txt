@@ -1,0 +1,28 @@
+import re,pandas as pd
+
+def jil_to_key_value(jil_text):
+    pattern = r'\s*(\w+)\s*:\s*([^\n]+)\n'
+    regex = re.compile(pattern) 
+    matches = regex.findall(jil_text)
+    key_value_pairs = {key.strip(): value.strip() for key, value in matches}
+    if 'insert_job' in key_value_pairs:
+        job_info = key_value_pairs['insert_job']
+        job_name, job_type = re.match(r'(\w+)\s+job_type:\s+(\w+)', job_info).groups()
+        key_value_pairs['job_name'] = job_name
+        key_value_pairs['job_type'] = job_type
+    return key_value_pairs
+
+with open('example.txt', 'r') as file:
+    # Read the entire content of the file
+    output_array = file.read().split("\n*")
+    print(output_array)
+
+data_array =[]
+for i in output_array:
+    result = jil_to_key_value(jil_text)
+    del result['insert_job']
+    data_array.append(result)
+    print(result)
+    
+df = pd.DataFrame(data_array)
+df.to_excel('job_data.xlsx', index=False)
