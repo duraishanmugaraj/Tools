@@ -14,7 +14,8 @@ sudo ./aws/install --install-dir /usr/local/aws-cli --bin-dir /usr/local/bin
 export PATH=/usr/local/bin:$PATH
 echo 'export PATH=/usr/local/bin:$PATH' >> ~/.bashrc
 source ~/.bashrc
-
+rm -rf aws
+rm -rf awscliv2.zip
 
 sudo yum install -y python3-pip
 python3 -m pip install --upgrade pip
