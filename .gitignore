@@ -6,7 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# reslove git merge conflict
 #git merge conflict 
+# reslove git merge conflict
 
 # Distribution / packaging
 .Python
