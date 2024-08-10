@@ -2,7 +2,7 @@
 #bash codespaces.bash
 source /usr/local/sdkman/bin/sdkman-init.sh
 
-sdk install java 8.0.422-amzn
+sdk install java 8.0.422-amzn -f --silent
 sdk default java 8.0.422-amzn
 sdk install spark 3.0.1
 pip install pyspark==3.0.1
