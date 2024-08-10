@@ -1,0 +1,11 @@
+List all my ec2 instances along with its InstanceId, State, PrivateIpAddress, PublicIpAddress, PublicDnsName
+aws ec2 describe-instances --query "Reservations[].Instances[].[InstanceId, State.Name, PrivateIpAddress, PublicIpAddress, PublicDnsName]" --output text
+
+start my instance 
+aws ec2 start-instances --instance-ids i-006955b0149bf1d43
+
+command to copy rsa key to local
+aws s3 cp s3://ec2-spark-aws-files/rsa.pem ./
+
+ssh to my instance
+ssh -i "rsa.pem" ec2-user@ec2-3-110-212-103.ap-south-1.compute.amazonaws.com

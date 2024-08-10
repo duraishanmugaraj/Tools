@@ -29,5 +29,3 @@ df.to_excel('job_data.xlsx', index=False)
 
 #Git Test
 
-git config --global user.email "duraishanmugaraj.r@gmail.com"
-git config --global user.name "Durai"

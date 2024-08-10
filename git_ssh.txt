@@ -1,0 +1,5 @@
+ssh-keygen -t ed25519 -C "duraishanmugaraj.r@gmail.com"
+cat /home/ec2-user/.ssh/id_ed25519.pub
+
+git config --global user.email "duraishanmugaraj.r@gmail.com"
+git config --global user.name "Durai"
