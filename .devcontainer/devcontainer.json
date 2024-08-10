@@ -1,7 +1,6 @@
 {
     "features": {
-        "ghcr.io/devcontainers/features/aws-cli:1": {},
-        "ghcr.io/devcontainers-contrib/features/spark-sdkman:2": {}
+        "ghcr.io/bartventer/arch-devcontainer-features/aws-cli:1": {}
     }
     
   }
