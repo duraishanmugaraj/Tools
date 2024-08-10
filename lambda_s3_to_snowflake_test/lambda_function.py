@@ -1,3 +1,5 @@
+# aws s3 cp data/creditcard/creditcard_part_1.csv  s3://ec2-spark-aws-files
+
 import json
 import snowflake.connector
 import os 
