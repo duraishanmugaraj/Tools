@@ -1,6 +1,10 @@
 {
-    "features": {
-        "ghcr.io/bartventer/arch-devcontainer-features/aws-cli:1": {}
-    }
-    
-  }
+    "name": "My Custom Codespace",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "settings": {},
+    "extensions": [],
+    "postCreateCommand": "source ~/.bashrc",
+    "remoteUser": "root"
+}
