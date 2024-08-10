@@ -6,8 +6,7 @@ sdk install java 8.0.422-amzn
 sdk default java 8.0.422-amzn
 sdk install spark 3.0.1
 pip install pyspark==3.0.1
-pip install snowflake-connector-python load_dotenv
-
+pip install snowflake-connector-python python-dotenv
 
 #Install aws cli
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
