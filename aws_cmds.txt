@@ -9,3 +9,15 @@ aws s3 cp s3://ec2-spark-aws-files/rsa.pem ./
 
 ssh to my instance
 ssh -i "rsa.pem" ec2-user@ec2-3-110-212-103.ap-south-1.compute.amazonaws.com
+
+
+
+
+
+
+
+
+aws cloudformation deploy \
+  --template-file s3.yaml \
+  --stack-name cloud-formation-testing-01 \
+  --region ap-south-1
