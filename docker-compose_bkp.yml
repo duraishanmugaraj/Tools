@@ -1,0 +1,61 @@
+version: '3'
+services:
+  spark-master:
+    image: bitnami/spark:latest
+    container_name: spark-master
+    ports:
+      - "4041:4040"  # Exposing Spark Web UI on port 8080
+      - "7077:7077"  # Exposing Spark master port on 7077
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark-master
+      - SPARK_MASTER_PORT=7077
+      - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/tmp/spark-events
+    volumes:
+      - spark-events:/tmp/spark-events
+    networks:
+      - spark-network
+
+  spark-worker-1:
+    image: bitnami/spark:latest
+    container_name: spark-worker-1
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    networks:
+      - spark-network
+
+  spark-worker-2:
+    image: bitnami/spark:latest
+    container_name: spark-worker-2
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    networks:
+      - spark-network
+
+  spark-history-server:
+    image: bitnami/spark:latest
+    container_name: spark-history-server
+    depends_on:
+      - spark-master
+    ports:
+      - "18080:18080"  # Exposing Spark History Server Web UI on port 18080
+    environment:
+      - SPARK_MODE=historyserver
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/tmp/spark-events
+    volumes:
+      - spark-events:/tmp/spark-events
+    networks:
+      - spark-network
+
+volumes:
+  spark-events:
+
+networks:
+  spark-network:
