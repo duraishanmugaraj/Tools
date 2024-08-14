@@ -1,0 +1,106 @@
+#DOCKER
+docker run --name pyspark -p 8080:8080 -p 4040:4040 apache/spark:latest
+docker run --name pyspark -p 8080:8080 -p 4040:4040 bitnami/spark:latest
+docker exec -it -u root pyspark /bin/bash
+sed -i 's/--name "PySparkShell"//g' /opt/bitnami/spark/bin/pyspark
+docker exec -it pyspark /bin/bash
+
+
+docker-compose.yml
+version: '3'
+services:
+  spark-master:
+    image: bitnami/spark:latest
+    container_name: spark-master
+    ports:
+      - "8080:8080"
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_HOST=spark-master
+      - SPARK_MASTER_PORT=7077
+    networks:
+      - spark-network
+
+  spark-worker-1:
+    image: bitnami/spark:latest
+    container_name: spark-worker-1
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    networks:
+      - spark-network
+
+  spark-worker-2:
+    image: bitnami/spark:latest
+    container_name: spark-worker-2
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    networks:
+      - spark-network
+
+networks:
+  spark-network:
+
+docker-compose up -d
+docker exec -it -u root spark-master sed -i 's/--name "PySparkShell"//g' /opt/bitnami/spark/bin/pyspark
+docker exec -it spark-master bash
+
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+spark = (SparkSession.builder 
+    .appName("Create DataFrame with Digits")
+    .getOrCreate())
+
+num_rows = 1000000
+df = spark.range(num_rows * num_rows)
+df = df.withColumn("digit", (col("id") * 10).cast("int"))
+
+df.show(10)
+print(f"Number of rows: {df.count()}")
+
+
+docker-compose up -d
+docker cp example.py spark-master:/example.py
+docker exec -it spark-master /opt/spark/bin/spark-submit --master spark://spark-master:7077 --deploy-mode client /example.py
+
+docker run -it --rm -v spark-events:/tmp/spark-events alpine /bin/sh
+docker exec -it spark-master bash
+
+docker-compose down
+docker image prune -f
+docker volume prune -f
+
+
+
+docker exec -it spark-master /opt/spark/bin/spark-submit \
+  --deploy-mode client \
+  --master spark://master:7077 \
+  --conf spark.eventLog.enabled=true \
+  --conf spark.eventLog.dir=/opt/spark/logs \
+  --conf spark.history.fs.logDirectory=/opt/spark/logs \
+  --conf spark.eventLog.permissions=777 \
+  /example.py
+
+
+docker exec -it -u root spark-master chmod 777 /opt/spark/logs
+
+
+
+docker cp pyspark_s3.py spark-master:/pyspark_s3.py
+docker exec -it spark-master /opt/spark/bin/spark-submit \
+  --deploy-mode client \
+  --master spark://master:7077 \
+  --conf spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem \
+  --conf spark.hadoop.fs.s3a.access.key= \
+  --conf spark.hadoop.fs.s3a.secret.key= \
+  --conf spark.hadoop.fs.s3a.endpoint=s3.amazonaws.com \
+  --packages org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.317 \
+  /pyspark_s3.py
+  
+  
+docker exec -it -u root spark-master  /home/spark/.ivy2/jars
