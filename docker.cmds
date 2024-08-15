@@ -103,4 +103,13 @@ docker exec -it spark-master /opt/spark/bin/spark-submit \
   /pyspark_s3.py
   
   
-docker exec -it -u root spark-master  /home/spark/.ivy2/jars
+docker exec -it -u root spark-master  bash
+mkdir -p /home/spark/.ivy2/jars
+chmod 777 -R /home/spark/.ivy2/jars
+
+
+#Apache Airflow
+docker-compose -f docker-compose.yml up -d
+
+
+docker run --detach -p 8888:8888 -p 4040:4040 -p 4041:4041 quay.io/jupyter/pyspark-notebook

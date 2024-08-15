@@ -1,31 +1,34 @@
-import re,pandas as pd
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
+import time
 
-def jil_to_key_value(jil_text):
-    pattern = r'\s*(\w+)\s*:\s*([^\n]+)\n'
-    regex = re.compile(pattern) 
-    matches = regex.findall(jil_text)
-    key_value_pairs = {key.strip(): value.strip() for key, value in matches}
-    if 'insert_job' in key_value_pairs:
-        job_info = key_value_pairs['insert_job']
-        job_name, job_type = re.match(r'(\w+)\s+job_type:\s+(\w+)', job_info).groups()
-        key_value_pairs['job_name'] = job_name
-        key_value_pairs['job_type'] = job_type
-    return key_value_pairs
+# Initialize SparkSession
+spark = SparkSession.builder \
+    .appName("PySpark Example with Sleep") \
+    .getOrCreate()
 
-with open('example.txt', 'r') as file:
-    # Read the entire content of the file
-    output_array = file.read().split("\n*")
-    print(output_array)
+# Sample data
+data = [
+    ("Alice", 34),
+    ("Bob", 45),
+    ("Cathy", 29),
+]
 
-data_array =[]
-for i in output_array:
-    result = jil_to_key_value(jil_text)
-    del result['insert_job']
-    data_array.append(result)
-    print(result)
-    
-df = pd.DataFrame(data_array)
-df.to_excel('job_data.xlsx', index=False)
+# Create a DataFrame
+df = spark.createDataFrame(data, ["Name", "Age"])
 
-#Git Test
+# Perform a simple transformation
+df_transformed = df.withColumn("AgePlusOne", col("Age") + 1)
 
+# Show the DataFrame
+df_transformed.show()
+
+# Sleep for 10 minutes (600 seconds)
+print("Sleeping for 10 minutes...")
+time.sleep(600)
+
+# Continue with additional processing if needed
+print("Woke up from sleep!")
+
+# Stop the SparkSession
+spark.stop()

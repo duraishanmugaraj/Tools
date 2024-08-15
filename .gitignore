@@ -9,7 +9,7 @@ __pycache__/
 # reslove git merge conflict
 #git merge conflict 
 # reslove git merge conflict
-
+logs/
 # Distribution / packaging
 .Python
 build/

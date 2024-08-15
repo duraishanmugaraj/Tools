@@ -12,9 +12,10 @@ services:
       - SPARK_EVENTLOG_DIR=/opt/spark/logs
     command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master"]
     ports:
-      - "7077:7077"   # Spark Master port
       - "8080:4040"   # Spark Master Web UI port
+      - "7077:7077"   # Spark Master port
     volumes:
+      - ./example.py:/example.py
       - spark-logs:/opt/spark/logs
     networks:
       - spark-network
